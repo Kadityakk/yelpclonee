@@ -1,7 +1,57 @@
-<footer class="footer bg-dark py-3 mt-auto">
+<footer class="bp-footer mt-auto pt-5 pb-4">
   <div class="container">
-    <span class="text-secondary">
-      &copy; BestPlace <%= new Date().getFullYear() %>
-    </span>
+    <div class="row g-4">
+      <div class="col-md-5">
+        <div class="bp-footer-brand mb-2">BestPlace</div>
+        <p class="mb-0" style="max-width: 42ch">
+          Katalog tempat menarik yang ditulis dan dinilai langsung oleh orang
+          yang pernah ke sana.
+        </p>
+      </div>
+      <div class="col-6 col-md-3">
+        <!-- .h6 hanya untuk ukuran; levelnya tetap h2 supaya tidak melompati h4/h5 -->
+        <h2 class="h6 text-white mb-3">Jelajahi</h2>
+        <ul class="list-unstyled d-grid gap-2 mb-0">
+          <li><a href="/places">Semua tempat</a></li>
+          <li><a href="/places/create">Tambah tempat</a></li>
+        </ul>
+      </div>
+      <div class="col-6 col-md-4">
+        <h2 class="h6 text-white mb-3">Akun</h2>
+        <ul class="list-unstyled d-grid gap-2 mb-0">
+          <% if (!currentUser) { %>
+          <li><a href="/login">Masuk</a></li>
+          <li><a href="/register">Daftar</a></li>
+          <% } else { %>
+          <li>Masuk sebagai <%= currentUser.username %></li>
+          <% } %>
+        </ul>
+      </div>
+    </div>
+
+    <hr class="my-4" style="border-color: rgba(255, 255, 255, 0.18)" />
+
+    <div
+      class="d-flex flex-column flex-md-row justify-content-between gap-2 small"
+    >
+      <span>&copy; BestPlace <%= new Date().getFullYear() %></span>
+      <!-- atribusi wajib untuk data peta yang dipakai -->
+      <span>
+        Data peta
+        <a
+          href="https://www.openstreetmap.org/copyright"
+          target="_blank"
+          rel="noopener noreferrer"
+          >OpenStreetMap</a
+        >
+        &middot; foto dari
+        <a
+          href="https://unsplash.com/?utm_source=BestPlace&amp;utm_medium=referral"
+          target="_blank"
+          rel="noopener noreferrer"
+          >Unsplash</a
+        >
+      </span>
+    </div>
   </div>
 </footer>

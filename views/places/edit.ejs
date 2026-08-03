@@ -2,7 +2,7 @@
 
 <h1 class="text-center">Edit Place</h1>
 
-<div class="col-6 offset-3">
+<div class="col-md-6 offset-md-3">
   <form
     action="/places/<%= place._id %>?_method=PUT"
     method="POST"
@@ -23,8 +23,6 @@
       <div class="valid-feedback">Looks good!</div>
       <div class="invalid-feedback">Please fill out this field!.</div>
     </div>
-    <div class="valid-feedback">Looks good!</div>
-    <div class="invalid-feedback">Please fill out this field!.</div>
 
     <div class="mb-3">
       <label for="location" class="form-label">Location</label>
@@ -33,9 +31,12 @@
         name="place[location]"
         id="location"
         class="form-control"
-        value="<%= place.title %>"
+        value="<%= place.location %>"
         required
       />
+      <div class="form-text">
+        Kalau lokasi diubah, titik di peta dicari ulang otomatis.
+      </div>
       <div class="valid-feedback">Looks good!</div>
       <div class="invalid-feedback">Please fill out this field!.</div>
     </div>
@@ -46,10 +47,9 @@
         name="place[description]"
         id="description"
         class="form-control"
+        rows="4"
         required
-      >
-<%= place.title %></textarea
-      >
+      ><%= place.description %></textarea>
       <div class="valid-feedback">Looks good!</div>
       <div class="invalid-feedback">Please fill out this field!.</div>
     </div>
@@ -57,19 +57,37 @@
     <div class="mb-3">
       <label for="price" class="form-label">Price</label>
       <input
-        type="text"
+        type="number"
         name="place[price]"
         id="price"
         class="form-control"
         value="<%= place.price %>"
+        min="0"
         required
       />
       <div class="valid-feedback">Looks good!</div>
       <div class="invalid-feedback">Please fill out this field!.</div>
     </div>
 
+    <!-- gambar yang sekarang tersimpan, biar user tahu apa yang bakal diganti -->
+    <% if (place.images && place.images.length) { %>
     <div class="mb-3">
-      <label for="image" class="form-label">Image</label>
+      <label class="form-label">Current images</label>
+      <div class="d-flex flex-wrap gap-2">
+        <% place.images.forEach((image) => { %>
+        <img
+          src="<%= image.url %>"
+          alt="<%= place.title %>"
+          class="rounded border"
+          style="width: 96px; height: 96px; object-fit: cover"
+        />
+        <% }) %>
+      </div>
+    </div>
+    <% } %>
+
+    <div class="mb-3">
+      <label for="image" class="form-label">Replace images</label>
       <input
         type="file"
         name="image"
@@ -78,34 +96,13 @@
         class="form-control"
         multiple
       />
-      <div class="valid-feedback">Looks good!</div>
-      <div class="invalid-feedback">Please fill out this field!.</div>
+      <div class="form-text">
+        Kosongkan kalau tidak ingin mengganti gambar. Upload baru akan
+        menggantikan semua gambar lama (maks 5 file, 5MB per file).
+      </div>
     </div>
+
     <button type="submit" class="btn btn-success">Save</button>
+    <a href="/places/<%= place._id %>" class="btn btn-secondary">Cancel</a>
   </form>
 </div>
-
-<script>
-  (() => {
-    "use strict";
-
-    // Fetch all the forms we want to apply custom Bootstrap validation styles to
-    const forms = document.querySelectorAll(".validated-form");
-
-    // Loop over them and prevent submission
-    Array.from(forms).forEach((form) => {
-      form.addEventListener(
-        "submit",
-        (event) => {
-          if (!form.checkValidity()) {
-            event.preventDefault();
-            event.stopPropagation();
-          }
-
-          form.classList.add("was-validated");
-        },
-        false
-      );
-    });
-  })();
-</script>

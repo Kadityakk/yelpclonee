@@ -1,6 +1,22 @@
-<nav class="navbar navbar-expand-lg bg-dark sticky-top" data-bs-theme="dark">
-  <div class="container-fluid">
-    <a class="navbar-brand" href="/">BestPlace</a>
+<nav class="navbar navbar-expand-lg sticky-top bp-navbar">
+  <div class="container">
+    <a class="navbar-brand d-flex align-items-center gap-2" href="/">
+      <svg
+        width="26"
+        height="26"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
+        <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z" />
+        <circle cx="12" cy="10" r="3" />
+      </svg>
+      BestPlace
+    </a>
     <button
       class="navbar-toggler"
       type="button"
@@ -8,48 +24,56 @@
       data-bs-target="#navbarNav"
       aria-controls="navbarNav"
       aria-expanded="false"
-      aria-label="Toggle navigation"
+      aria-label="Buka menu navigasi"
     >
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item">
-          <a class="nav-link" href="/">Home</a>
+          <a
+            class="nav-link <%= currentPath === '/' ? 'is-active' : '' %>"
+            <%= currentPath === '/' ? 'aria-current="page"' : '' %>
+            href="/"
+            >Beranda</a
+          >
         </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/places">Places</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/places/create">New Place</a>
-        </li>
-      </ul>
-      <ul class="navbar-nav">
-        <% if(!currentUser) { %>
-        <li class="nav-item">
-          <a class="nav-link" href="/login">Login</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/register">Register</a>
-        </li>
-        <% } else { %>
         <li class="nav-item">
           <a
-            class="nav-link"
-            href="/logout"
-            onclick="
-          event.preventDefault();
-          document.getElementById('logout-form').submit();
-          
-          "
-            >Logout</a
+            class="nav-link <%= currentPath === '/places' ? 'is-active' : '' %>"
+            <%= currentPath === '/places' ? 'aria-current="page"' : '' %>
+            href="/places"
+            >Jelajahi</a
           >
-          <form
-            action="/logout"
-            method="POST"
-            style="display: none"
-            id="logout-form"
-          ></form>
+        </li>
+        <li class="nav-item">
+          <a
+            class="nav-link <%= currentPath === '/places/create' ? 'is-active' : '' %>"
+            <%= currentPath === '/places/create' ? 'aria-current="page"' : '' %>
+            href="/places/create"
+            >Tambah Tempat</a
+          >
+        </li>
+      </ul>
+      <ul class="navbar-nav align-items-lg-center gap-lg-1">
+        <% if(!currentUser) { %>
+        <li class="nav-item">
+          <a class="nav-link" href="/login">Masuk</a>
+        </li>
+        <li class="nav-item">
+          <a class="btn btn-bp-teal btn-sm px-3 py-2" href="/register">Daftar</a>
+        </li>
+        <% } else { %>
+        <li class="nav-item d-none d-lg-block">
+          <span class="bp-meta">Halo, <%= currentUser.username %></span>
+        </li>
+        <li class="nav-item">
+          <!-- logout wajib POST; tombol submit langsung, tanpa link + JS -->
+          <form action="/logout" method="POST" class="d-inline">
+            <button type="submit" class="nav-link border-0 bg-transparent">
+              Keluar
+            </button>
+          </form>
         </li>
         <% } %>
       </ul>

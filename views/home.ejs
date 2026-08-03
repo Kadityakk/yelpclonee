@@ -1,2 +1,283 @@
 <% layout('layouts/app') %>
-<h1>BestPlace</h1>
+<%
+// helper tampilan harga: 0 dianggap gratis
+const formatPrice = (price) =>
+  !price ? "Gratis" : `Rp ${Number(price).toLocaleString("id-ID")}`;
+const highlight = featured[0];
+
+// teks CTA disiapkan di sini supaya tidak ada string panjang yang
+// terpotong antar baris di dalam tag EJS
+const cta = currentUser
+  ? {
+      href: "/places/create",
+      label: "Tambah tempat",
+      title: "Tahu tempat yang belum ada di sini?",
+      text: "Tambahkan sekarang, lengkap dengan foto dan titiknya di peta.",
+    }
+  : {
+      href: "/register",
+      label: "Buat akun gratis",
+      title: "Punya tempat favorit yang layak dikenal?",
+      text: "Buat akun gratis, lalu bagikan tempatmu dan beri ulasan tempat orang lain.",
+    };
+%>
+
+<!-- ============================ HERO ============================ -->
+<section class="bp-hero">
+  <div class="container">
+    <div class="row align-items-center g-5">
+      <div class="col-lg-6">
+        <span class="bp-eyebrow mb-3">
+          <svg
+            width="15"
+            height="15"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z" />
+            <circle cx="12" cy="10" r="3" />
+          </svg>
+          Ditulis oleh yang pernah ke sana
+        </span>
+
+        <h1 class="mb-3">Tempat bagus itu <br />biasanya dari cerita orang.</h1>
+
+        <p class="bp-lead mb-4">
+          BestPlace mengumpulkan tempat menarik lengkap dengan foto, titik
+          petanya, dan ulasan jujur bintang 1 sampai 5. Semuanya ditulis
+          pengunjung, bukan iklan.
+        </p>
+
+        <div class="d-flex flex-wrap gap-2 mb-5">
+          <a href="/places" class="btn btn-bp">Jelajahi tempat</a>
+          <a
+            href="<%= currentUser ? '/places/create' : '/register' %>"
+            class="btn btn-bp-ghost"
+          >
+            <%= currentUser ? 'Tambah tempat' : 'Gabung gratis' %>
+          </a>
+        </div>
+
+        <div class="d-flex flex-wrap gap-4 gap-sm-5">
+          
+        </div>
+      </div>
+
+      <!-- contoh kartu tempat: memperlihatkan langsung isi aplikasinya -->
+      
+    </div>
+  </div>
+</section>
+
+<!-- ============================ PETA ============================ -->
+<% if (mapPlaces.length) { %>
+<section class="bp-section">
+  <div class="container">
+    <div class="row align-items-end mb-4 g-3">
+      <div class="col-md-8">
+        <h2 class="bp-section-title mb-2">Lihat sebarannya di peta</h2>
+        <p class="bp-section-sub mb-0">
+          Setiap tempat punya titik koordinatnya sendiri. Klik penanda untuk
+          langsung membuka halaman tempatnya.
+        </p>
+      </div>
+      <div class="col-md-4 text-md-end">
+        <span class="bp-meta"
+          ><%= mapPlaces.length %> dari <%= stats.placeCount %> tempat sudah
+          terpetakan</span
+        >
+      </div>
+    </div>
+
+    <div id="map" class="bp-map"></div>
+
+    <script type="application/json" id="map-data">
+      <%- JSON.stringify({
+        places: mapPlaces.map((place) => ({
+          title: place.title,
+          location: place.location,
+          url: `/places/${place._id}`,
+          coordinates: place.geometry ? place.geometry.coordinates : null,
+        })),
+      }).replace(/</g, "\\u003c") %>
+    </script>
+  </div>
+</section>
+<% } %>
+
+<!-- ====================== TEMPAT TERBARU ======================== -->
+<section class="bp-section pt-0">
+  <div class="container">
+    <div class="d-flex justify-content-between align-items-end mb-4 gap-3">
+      <div>
+        <h2 class="bp-section-title mb-2">Tempat terbaru</h2>
+        <p class="bp-section-sub mb-0">
+          Baru saja ditambahkan oleh anggota BestPlace.
+        </p>
+      </div>
+      <a href="/places" class="btn btn-bp-teal flex-shrink-0 d-none d-sm-inline-block"
+        >Lihat semua</a
+      >
+    </div>
+
+    <% if (!featured.length) { %>
+    <div class="bp-step text-center">
+      <p class="mb-3">Belum ada tempat sama sekali di sini.</p>
+      <a
+        href="<%= currentUser ? '/places/create' : '/register' %>"
+        class="btn btn-bp"
+        >Jadi yang pertama menambahkan</a
+      >
+    </div>
+    <% } else { %>
+    <div class="row g-4">
+      <% featured.forEach((place) => { %>
+      <div class="col-sm-6 col-lg-4">
+        <article class="bp-place-card position-relative">
+          <% if (place.images && place.images.length) { %>
+          <img
+            src="<%= place.images[0].url %>"
+            alt="<%= place.title %>"
+            class="bp-place-media"
+            width="400"
+            height="250"
+            loading="lazy"
+          />
+          <% } else { %>
+          <div class="bp-place-placeholder">Belum ada foto</div>
+          <% } %>
+
+          <div class="p-3">
+            <div class="d-flex justify-content-between align-items-start gap-2">
+              <a
+                href="/places/<%= place._id %>"
+                class="bp-place-title bp-stretch"
+                ><%= place.title %></a
+              >
+              <span class="bp-price-tag flex-shrink-0"
+                ><%= formatPrice(place.price) %></span
+              >
+            </div>
+            <p class="bp-meta mt-2 mb-3"><%= place.location %></p>
+            <div class="d-flex align-items-center gap-2">
+              <%- include('layouts/partials/stars', { rating: place.avgRating }) %>
+              <span class="bp-meta">
+                <%= place.reviewCount ? `${place.reviewCount} ulasan` : 'Belum ada ulasan' %>
+              </span>
+            </div>
+          </div>
+        </article>
+      </div>
+      <% }) %>
+    </div>
+
+    <div class="text-center mt-4 d-sm-none">
+      <a href="/places" class="btn btn-bp-teal">Lihat semua tempat</a>
+    </div>
+    <% } %>
+  </div>
+</section>
+
+<!-- ========================= CARA KERJA ========================= -->
+<section class="bp-section pt-0">
+  <div class="container">
+    <h2 class="bp-section-title mb-4">Cara kerjanya</h2>
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="bp-step">
+          <div class="bp-step-icon">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z" />
+              <circle cx="12" cy="10" r="3" />
+            </svg>
+          </div>
+          <h3 class="h5">1. Jelajahi</h3>
+          <p class="bp-meta mb-0">
+            Telusuri daftar tempat lengkap dengan foto dan lokasinya di peta,
+            tanpa perlu punya akun.
+          </p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="bp-step">
+          <div class="bp-step-icon">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <path
+                d="M12 3l2.9 5.9 6.6.9-4.8 4.6 1.2 6.5-5.9-3.1-5.9 3.1 1.2-6.5L2.5 9.8l6.6-.9z"
+              />
+            </svg>
+          </div>
+          <h3 class="h5">2. Beri ulasan</h3>
+          <p class="bp-meta mb-0">
+            Sudah punya akun? Tulis pengalamanmu dan beri nilai bintang 1 sampai
+            5. Ulasanmu bisa kamu hapus kapan saja.
+          </p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="bp-step">
+          <div class="bp-step-icon">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <rect x="3" y="5" width="18" height="14" rx="2" />
+              <circle cx="8.5" cy="10" r="1.5" />
+              <path d="M21 15l-5-5-6 6" />
+            </svg>
+          </div>
+          <h3 class="h5">3. Bagikan tempatmu</h3>
+          <p class="bp-meta mb-0">
+            Tambahkan tempat favoritmu sendiri. Unggah fotonya, atau biarkan
+            kosong dan fotonya diambilkan otomatis.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ CTA ============================= -->
+<section class="bp-section pt-0">
+  <div class="container">
+    <div class="bp-cta">
+      <div class="row align-items-center g-4">
+        <div class="col-lg-8">
+          <h2 class="bp-section-title mb-2"><%= cta.title %></h2>
+          <p class="mb-0" style="color: rgba(255, 255, 255, 0.85)">
+            <%= cta.text %>
+          </p>
+        </div>
+        <div class="col-lg-4 text-lg-end">
+          <a href="<%= cta.href %>" class="btn btn-bp"><%= cta.label %></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

@@ -30,8 +30,12 @@
         name="place[location]"
         id="location"
         class="form-control"
+        placeholder="contoh: Pantai Kuta, Badung, Bali"
         required
       />
+      <div class="form-text">
+        Tulis selengkap mungkin supaya titiknya ketemu di peta.
+      </div>
       <div class="valid-feedback">Looks good!</div>
       <div class="invalid-feedback">Please fill out this field!.</div>
     </div>
@@ -51,10 +55,11 @@
     <div class="mb-3">
       <label for="price" class="form-label">Price</label>
       <input
-        type="text"
+        type="number"
         name="place[price]"
         id="price"
         class="form-control"
+        min="0"
         required
       />
       <div class="valid-feedback">Looks good!</div>
@@ -70,10 +75,11 @@
         accept="image/*"
         class="form-control"
         multiple
-        required
       />
-      <div class="valid-feedback">Looks good!</div>
-      <div class="invalid-feedback">Please fill out this field!.</div>
+      <div class="form-text">
+        Opsional - maks 5 file, 5MB per file. Kalau dikosongkan, fotonya
+        diambilkan otomatis dari Unsplash sesuai nama tempatnya.
+      </div>
     </div>
     <button type="submit" class="btn btn-success">Save</button>
   </form>

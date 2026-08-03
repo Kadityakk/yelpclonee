@@ -2,16 +2,17 @@ const mongoose = require("mongoose");
 
 module.exports = (redirectUrl = "/") => {
   return async (req, res, next) => {
-    const paramId = ["id", "place_id", "review_id"].find(
+    // cek SEMUA param id yang ada di request, bukan cuma yang pertama ketemu.
+    // di route review ada place_id dan review_id sekaligus, dua-duanya harus valid
+    const paramIds = ["id", "place_id", "review_id"].filter(
       (param) => req.params[param]
     );
-    if (!paramId) {
-      return next();
-    }
 
-    const id = req.params[paramId];
+    const hasInvalidId = paramIds.some(
+      (param) => !mongoose.Types.ObjectId.isValid(req.params[param])
+    );
 
-    if (!mongoose.Types.ObjectId.isValid(id)) {
+    if (hasInvalidId) {
       req.flash("error_msg", "Invalid Id / data tidak ditemukan");
       return res.redirect(redirectUrl);
     }

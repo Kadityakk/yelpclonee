@@ -1,3 +1,5 @@
+require("dotenv").config({ quiet: true });
+
 const ejsMate = require("ejs-mate");
 const express = require("express");
 const session = require("express-session");
@@ -5,8 +7,10 @@ const flash = require("connect-flash");
 const methodOverride = require("method-override");
 const mongoose = require("mongoose");
 const ErrorHandler = require("./utils/ErrorHandler");
+const wrapAsync = require("./utils/WrapAsync");
 const path = require("path");
 const passport = require("passport");
+const multer = require("multer");
 const LocalStrategy = require("passport-local");
 const User = require("./models/user");
 const app = express();
@@ -56,13 +60,15 @@ app.use((req, res, next) => {
   res.locals.currentUser = req.user;
   res.locals.success_msg = req.flash("success_msg");
   res.locals.error_msg = req.flash("error_msg");
+  // dipakai layout: menandai menu yang sedang aktif
+  res.locals.currentPath = req.path;
+  // default semua halaman dibungkus .container; landing page menimpanya jadi true
+  res.locals.fullWidth = false;
   next();
 });
 
 // root/home
-app.get("/", (req, res) => {
-  res.render("home");
-});
+app.get("/", wrapAsync(require("./controllers/home").index));
 
 //routes
 app.use("/", require("./routes/auth"));
@@ -82,6 +88,13 @@ app.use((req, res, next) => {
 app.use((err, req, res, next) => {
   if (res.headersSent) {
     return next(err);
+  }
+  // error bawaan multer (file kegedean / kebanyakan) tidak punya statusCode,
+  // tanpa ini upload yang ditolak akan tampil sebagai error 500
+  if (err instanceof multer.MulterError) {
+    err.statusCode = 400;
+    if (err.code === "LIMIT_FILE_SIZE") err.message = "Max image size is 5MB";
+    if (err.code === "LIMIT_FILE_COUNT") err.message = "Max 5 images per place";
   }
   const { statusCode = 500 } = err;
   if (!err.message) err.message = "Oh no, something went wrong";

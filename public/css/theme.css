@@ -1,0 +1,424 @@
+/* ==========================================================================
+   BestPlace - design tokens & komponen kustom
+   Palet: teal laut (brand) + oranye senja (CTA) + emas (rating).
+   Sengaja menjauh dari merah khas Yelp supaya punya identitas sendiri.
+   ========================================================================== */
+
+:root {
+  --bp-teal-900: #134e4a;
+  --bp-teal-800: #115e59;
+  --bp-teal-700: #0f766e;
+  --bp-teal-600: #0d9488;
+  --bp-orange-600: #ea580c;
+  --bp-orange-500: #f97316;
+  --bp-gold: #f59e0b;
+
+  --bp-ink: #0f172a;
+  --bp-muted: #64748b;
+  --bp-bg: #f8fafc;
+  --bp-card: #ffffff;
+  --bp-border: #e2e8f0;
+
+  --bp-radius: 14px;
+  --bp-radius-lg: 22px;
+  --bp-shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.06);
+  --bp-shadow: 0 6px 20px rgba(15, 23, 42, 0.08);
+  --bp-shadow-lg: 0 20px 45px rgba(15, 23, 42, 0.16);
+
+  /* skala jarak kelipatan 8 */
+  --bp-space-3: 24px;
+  --bp-space-5: 40px;
+  --bp-space-8: 64px;
+}
+
+body {
+  font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  background-color: var(--bp-bg);
+  color: var(--bp-ink);
+}
+
+h1,
+h2,
+h3,
+.bp-display {
+  font-family: "Calistoga", Georgia, serif;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}
+
+/* --- navbar ------------------------------------------------------------- */
+.bp-navbar {
+  background-color: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--bp-border);
+}
+
+.bp-navbar .navbar-brand {
+  font-family: "Calistoga", Georgia, serif;
+  color: var(--bp-teal-800);
+  font-size: 1.35rem;
+}
+
+.bp-navbar .nav-link {
+  color: #334155;
+  font-weight: 500;
+  border-radius: 8px;
+  padding-inline: 0.7rem;
+}
+
+.bp-navbar .nav-link:hover,
+.bp-navbar .nav-link:focus-visible {
+  color: var(--bp-teal-700);
+  background-color: #f1f5f9;
+}
+
+/* halaman aktif ditandai warna + garis, bukan warna saja */
+.bp-navbar .nav-link.is-active {
+  color: var(--bp-teal-800);
+  box-shadow: inset 0 -2px 0 var(--bp-teal-600);
+}
+
+/* --- tombol ------------------------------------------------------------- */
+.btn-bp {
+  background-color: var(--bp-orange-600);
+  border: 1px solid var(--bp-orange-600);
+  color: #fff;
+  font-weight: 600;
+  border-radius: 999px;
+  padding: 0.65rem 1.5rem;
+  transition: background-color 0.2s ease, border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.btn-bp:hover,
+.btn-bp:focus-visible {
+  background-color: #c2410c;
+  border-color: #c2410c;
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+.btn-bp-ghost {
+  background-color: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  color: #fff;
+  font-weight: 600;
+  border-radius: 999px;
+  padding: 0.65rem 1.5rem;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.btn-bp-ghost:hover,
+.btn-bp-ghost:focus-visible {
+  background-color: rgba(255, 255, 255, 0.14);
+  border-color: #fff;
+  color: #fff;
+}
+
+.btn-bp-teal {
+  background-color: var(--bp-teal-700);
+  border: 1px solid var(--bp-teal-700);
+  color: #fff;
+  font-weight: 600;
+  border-radius: 999px;
+  padding: 0.65rem 1.5rem;
+}
+
+.btn-bp-teal:hover,
+.btn-bp-teal:focus-visible {
+  background-color: var(--bp-teal-800);
+  border-color: var(--bp-teal-800);
+  color: #fff;
+}
+
+/* fokus keyboard harus selalu terlihat */
+.btn-bp:focus-visible,
+.btn-bp-ghost:focus-visible,
+.btn-bp-teal:focus-visible,
+.bp-navbar .nav-link:focus-visible,
+.bp-place-card a:focus-visible {
+  outline: 3px solid var(--bp-gold);
+  outline-offset: 2px;
+}
+
+/* --- hero --------------------------------------------------------------- */
+.bp-hero {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, var(--bp-teal-900) 0%, #0b7f76 55%, #0e8f7f 100%);
+  color: #fff;
+  padding-block: var(--bp-space-8);
+}
+
+/* pola kontur samar, bukan foto stok - tetap rapi walau belum ada gambar */
+.bp-hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(
+      circle at 18% 22%,
+      rgba(255, 255, 255, 0.12) 0,
+      transparent 42%
+    ),
+    radial-gradient(circle at 85% 8%, rgba(245, 158, 11, 0.2) 0, transparent 38%),
+    radial-gradient(circle at 72% 88%, rgba(255, 255, 255, 0.08) 0, transparent 44%);
+  pointer-events: none;
+}
+
+.bp-hero > * {
+  position: relative;
+  z-index: 1;
+}
+
+.bp-hero h1 {
+  font-size: clamp(2.2rem, 5.2vw, 3.6rem);
+  line-height: 1.12;
+}
+
+.bp-hero .bp-lead {
+  color: rgba(255, 255, 255, 0.88);
+  font-size: 1.08rem;
+  line-height: 1.65;
+  max-width: 52ch;
+}
+
+.bp-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  color: #fff;
+  border-radius: 999px;
+  padding: 0.35rem 0.9rem;
+  font-size: 0.82rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
+/* --- statistik ---------------------------------------------------------- */
+.bp-stat-value {
+  font-family: "Calistoga", Georgia, serif;
+  font-size: 1.9rem;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.bp-stat-label {
+  font-size: 0.82rem;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+/* --- kartu preview di hero ---------------------------------------------- */
+.bp-preview {
+  background-color: var(--bp-card);
+  border-radius: var(--bp-radius-lg);
+  box-shadow: var(--bp-shadow-lg);
+  overflow: hidden;
+  color: var(--bp-ink);
+}
+
+.bp-preview-media {
+  height: 210px;
+  background-color: #e2e8f0;
+  object-fit: cover;
+  width: 100%;
+  display: block;
+}
+
+.bp-preview-placeholder {
+  height: 210px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, #cbd5e1, #e2e8f0);
+  color: var(--bp-muted);
+}
+
+/* --- section umum ------------------------------------------------------- */
+.bp-section {
+  padding-block: var(--bp-space-8);
+}
+
+.bp-section-title {
+  font-size: clamp(1.6rem, 3vw, 2.15rem);
+}
+
+.bp-section-sub {
+  color: var(--bp-muted);
+  max-width: 60ch;
+}
+
+/* --- kartu tempat ------------------------------------------------------- */
+.bp-place-card {
+  background-color: var(--bp-card);
+  border: 1px solid var(--bp-border);
+  border-radius: var(--bp-radius);
+  overflow: hidden;
+  height: 100%;
+  box-shadow: var(--bp-shadow-sm);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.bp-place-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--bp-shadow);
+}
+
+.bp-place-media {
+  aspect-ratio: 16 / 10;
+  width: 100%;
+  object-fit: cover;
+  display: block;
+  background-color: #e2e8f0;
+}
+
+.bp-place-placeholder {
+  aspect-ratio: 16 / 10;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, #e2e8f0, #f1f5f9);
+  color: var(--bp-muted);
+  font-size: 0.85rem;
+}
+
+.bp-place-title {
+  font-family: "Calistoga", Georgia, serif;
+  font-size: 1.1rem;
+  color: var(--bp-ink);
+  text-decoration: none;
+}
+
+.bp-place-title:hover {
+  color: var(--bp-teal-700);
+}
+
+/* judul kartu diklik, tapi seluruh kartu ikut jadi area klik */
+.bp-stretch::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+}
+
+.bp-meta {
+  color: var(--bp-muted);
+  font-size: 0.88rem;
+}
+
+.bp-price-tag {
+  background-color: #ecfdf5;
+  color: var(--bp-teal-800);
+  border: 1px solid #a7f3d0;
+  border-radius: 999px;
+  padding: 0.15rem 0.65rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+/* --- bintang rating ----------------------------------------------------- */
+.bp-stars {
+  display: inline-flex;
+  gap: 2px;
+  vertical-align: middle;
+}
+
+.bp-star {
+  width: 16px;
+  height: 16px;
+  fill: #cbd5e1;
+}
+
+.bp-star.is-on {
+  fill: var(--bp-gold);
+}
+
+/* --- langkah "cara kerja" ----------------------------------------------- */
+.bp-step {
+  background-color: var(--bp-card);
+  border: 1px solid var(--bp-border);
+  border-radius: var(--bp-radius);
+  padding: 1.75rem;
+  height: 100%;
+}
+
+.bp-step-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  background-color: #ccfbf1;
+  color: var(--bp-teal-800);
+  margin-bottom: 1rem;
+}
+
+.bp-step-icon svg {
+  width: 24px;
+  height: 24px;
+}
+
+/* --- peta di landing ---------------------------------------------------- */
+.bp-map {
+  height: 420px;
+  width: 100%;
+  border-radius: var(--bp-radius-lg);
+  border: 1px solid var(--bp-border);
+  box-shadow: var(--bp-shadow);
+  z-index: 0; /* jaga supaya pane Leaflet tidak menimpa navbar sticky */
+}
+
+/* --- pita CTA ----------------------------------------------------------- */
+.bp-cta {
+  background: linear-gradient(120deg, var(--bp-teal-800), var(--bp-teal-600));
+  color: #fff;
+  border-radius: var(--bp-radius-lg);
+  padding: clamp(2rem, 5vw, 3.25rem);
+}
+
+/* --- footer ------------------------------------------------------------- */
+.bp-footer {
+  background-color: var(--bp-teal-900);
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.bp-footer a {
+  color: rgba(255, 255, 255, 0.88);
+  text-decoration: none;
+}
+
+.bp-footer a:hover,
+.bp-footer a:focus-visible {
+  color: #fff;
+  text-decoration: underline;
+}
+
+.bp-footer .bp-footer-brand {
+  font-family: "Calistoga", Georgia, serif;
+  color: #fff;
+  font-size: 1.2rem;
+}
+
+/* --- hormati preferensi kurangi animasi --------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .bp-place-card:hover,
+  .btn-bp:hover {
+    transform: none;
+  }
+}
+
+@media (max-width: 767.98px) {
+  .bp-hero {
+    padding-block: var(--bp-space-5);
+  }
+
+  .bp-map {
+    height: 320px;
+  }
+}

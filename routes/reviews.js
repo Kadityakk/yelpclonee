@@ -1,7 +1,6 @@
 const express = require("express");
 
 const reviewController = require("../controllers/reviews");
-const Place = require("../models/place");
 
 const wrapAsync = require("../utils/WrapAsync");
 const { isAuthorReview } = require("../middlewares/isAuthor");
@@ -19,11 +18,12 @@ router.post(
   wrapAsync(reviewController.store)
 );
 // delete review
+// id divalidasi dulu sebelum isAuthorReview query pakai review_id
 router.delete(
   "/:review_id",
   isAuth,
-  isAuthorReview,
   isValidObjectId("/places"),
+  wrapAsync(isAuthorReview),
   wrapAsync(reviewController.destroy)
 );
 

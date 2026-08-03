@@ -2,10 +2,12 @@
 <link rel="stylesheet" href="/css/stars.css" />
 
 <div class="row mb-5">
-  <div class="col-6">
+  <div class="col-md-6">
     <div class="card">
+      <!-- carousel hanya kalau tempatnya punya gambar -->
+      <% if (place.images && place.images.length) { %>
       <div
-        id="carouselExampleAutoplaying"
+        id="placeCarousel"
         class="carousel slide"
         data-bs-ride="carousel"
       >
@@ -13,18 +15,21 @@
           <% place.images.forEach((image, index) => { %>
           <div class="carousel-item <%= index === 0 ? 'active' : '' %>">
             <img
-              src="/images/<%= image.filename%>"
+              src="<%= image.url %>"
               class="d-block w-100"
+              style="height: 320px; object-fit: cover"
               alt="<%= place.title %>"
             />
           </div>
           <% }) %>
         </div>
 
+        <!-- tombol prev/next tidak ada gunanya kalau gambarnya cuma satu -->
+        <% if (place.images.length > 1) { %>
         <button
           class="carousel-control-prev"
           type="button"
-          data-bs-target="#carouselExampleAutoplaying"
+          data-bs-target="#placeCarousel"
           data-bs-slide="prev"
         >
           <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -33,13 +38,43 @@
         <button
           class="carousel-control-next"
           type="button"
-          data-bs-target="#carouselExampleAutoplaying"
+          data-bs-target="#placeCarousel"
           data-bs-slide="next"
         >
           <span class="carousel-control-next-icon" aria-hidden="true"></span>
           <span class="visually-hidden">Next</span>
         </button>
+        <% } %>
       </div>
+      <% } else { %>
+      <div
+        class="d-flex align-items-center justify-content-center bg-body-secondary text-secondary"
+        style="height: 320px"
+      >
+        No image
+      </div>
+      <% } %>
+
+      <!-- Unsplash mewajibkan kredit fotografer untuk foto yang diambil dari API-nya -->
+      <% const credited = (place.images || []).filter((img) => img.credit); %>
+      <% if (credited.length) { %>
+      <div class="px-3 pt-2">
+        <small class="text-secondary">
+          Foto oleh <% credited.forEach((img, i) => { %><a
+            href="<%= img.creditUrl %>"
+            target="_blank"
+            rel="noopener noreferrer"
+            ><%= img.credit %></a
+          ><%= i < credited.length - 1 ? ", " : "" %><% }) %> di
+          <a
+            href="https://unsplash.com/?utm_source=BestPlace&amp;utm_medium=referral"
+            target="_blank"
+            rel="noopener noreferrer"
+            >Unsplash</a
+          >
+        </small>
+      </div>
+      <% } %>
 
       <div class="card-body">
         <h5 class="card-title"><%= place.title %></h5>
@@ -47,26 +82,13 @@
       </div>
       <ul class="list-group list-group-flush">
         <li class="list-group-item"><%= place.location %></li>
-        <li class="list-group-item">Author: <%= place.author.username %></li>
+        <li class="list-group-item">
+          Author: <%= place.author ? place.author.username : 'unknown' %>
+        </li>
         <li class="list-group-item"><%= place.price %></li>
       </ul>
-      <!-- edit and delete buttons should only be visible to the author but it don't work -->
-      <% if(currentUser && place.author.equals(currentUser._id)) { %>
-      <div class="card-body">
-        <a
-          href="/places/<%= place._id %>/edit"
-          class="btn btn-warning text-white"
-          >Edit</a
-        >
-        <form
-          action="/places/<%= place._id %>?_method=DELETE"
-          method="POST"
-          style="display: inline !important"
-        >
-          <button class="btn btn-danger">Delete</button>
-        </form>
-      </div>
 
+      <% if(currentUser && place.author && place.author.equals(currentUser._id)) { %>
       <div class="card-body">
         <a
           href="/places/<%= place._id %>/edit"
@@ -83,8 +105,29 @@
       </div>
       <% } %>
     </div>
+
+    <!-- peta lokasi tempat ini -->
+    <div class="card mt-3">
+      <div class="card-body">
+        <h6 class="card-subtitle mb-2 text-secondary">Location</h6>
+        <div id="map" class="rounded border" style="height: 280px"></div>
+      </div>
+    </div>
+
+    <script type="application/json" id="map-data">
+      <%- JSON.stringify({
+        places: [
+          {
+            title: place.title,
+            location: place.location,
+            coordinates: place.geometry ? place.geometry.coordinates : null,
+          },
+        ],
+      }).replace(/</g, "\\u003c") %>
+    </script>
   </div>
-  <div class="col-6">
+
+  <div class="col-md-6">
     <% if(currentUser) { %>
     <h3>Leave a review</h3>
     <form
@@ -169,7 +212,12 @@
           Rated <%= review.rating %> out of 5 stars
         </p>
         <p class="card-text"><%= review.body %></p>
-        <% if(currentUser && review.author.equals(currentUser._id)) { %>
+        <p class="card-text">
+          <small class="text-secondary"
+            >by <%= review.author ? review.author.username : 'unknown' %></small
+          >
+        </p>
+        <% if(currentUser && review.author && review.author.equals(currentUser._id)) { %>
         <form
           action="/places/<%= place._id %>/reviews/<%= review._id %>?_method=DELETE"
           method="POST"

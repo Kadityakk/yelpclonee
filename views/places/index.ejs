@@ -1,34 +1,81 @@
 <% layout('layouts/app') %>
 
-<h1>ALL Places</h1>
-<a href="/places/create">Add Place</a>
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h1 class="mb-0">All Places</h1>
+  <a href="/places/create" class="btn btn-success">Add Place</a>
+</div>
 
-<ul>
-  <% for (const place of places) { %>
+<!-- peta semua tempat, otomatis zoom mengikuti sebaran marker -->
+<div id="map" class="rounded border mb-4" style="height: 340px"></div>
 
-  <div class="card mb-3">
-    <div class="row">
-      <div class="col-md-4">
-        <img
-          src="<%= place.image %>"
-          alt="<%= place.title %>"
-          class="img-fluid"
-        />
+<script type="application/json" id="map-data">
+  <%- JSON.stringify({
+    places: places.map((place) => ({
+      title: place.title,
+      location: place.location,
+      url: `/places/${place._id}`,
+      coordinates: place.geometry ? place.geometry.coordinates : null,
+    })),
+  }).replace(/</g, "\\u003c") %>
+</script>
+
+<% for (const place of places) { %>
+<div class="card mb-3">
+  <div class="row g-0">
+    <div class="col-md-4">
+      <!-- images adalah array; sebelumnya view ini membaca place.image yang tidak ada di schema -->
+      <% if (place.images && place.images.length) { %>
+      <img
+        src="<%= place.images[0].url %>"
+        alt="<%= place.title %>"
+        class="img-fluid rounded-start w-100"
+        style="height: 100%; min-height: 180px; object-fit: cover"
+      />
+      <% } else { %>
+      <div
+        class="d-flex align-items-center justify-content-center bg-body-secondary text-secondary h-100"
+        style="min-height: 180px"
+      >
+        No image
       </div>
-      <div class="col-md-8">
-        <div class="card-body">
-          <h5 class="card-title"><%= place.title %></h5>
-          <p class="card-text"><%= place.description %></p>
-          <p class="card-text">
-            <small class="text-secondary"><%= place.location %></small>
-          </p>
-          <a href="/places/<%= place._id %>" class="btn btn-primary"
-            >View <%= place.title %></a
+      <% } %>
+    </div>
+    <div class="col-md-8">
+      <div class="card-body">
+        <h5 class="card-title"><%= place.title %></h5>
+        <p class="card-text"><%= place.description %></p>
+        <p class="card-text">
+          <small class="text-secondary"><%= place.location %></small>
+        </p>
+        <% if (place.images && place.images.length && place.images[0].credit) { %>
+        <p class="card-text">
+          <small class="text-secondary"
+            >Foto oleh
+            <a
+              href="<%= place.images[0].creditUrl %>"
+              target="_blank"
+              rel="noopener noreferrer"
+              ><%= place.images[0].credit %></a
+            >
+            di
+            <a
+              href="https://unsplash.com/?utm_source=BestPlace&amp;utm_medium=referral"
+              target="_blank"
+              rel="noopener noreferrer"
+              >Unsplash</a
+            ></small
           >
-        </div>
+        </p>
+        <% } %>
+        <a href="/places/<%= place._id %>" class="btn btn-primary"
+          >View <%= place.title %></a
+        >
       </div>
     </div>
   </div>
+</div>
+<% } %>
 
-  <% } %>
-</ul>
+<% if (!places.length) { %>
+<p class="text-secondary">Belum ada tempat. Tambahkan yang pertama!</p>
+<% } %>

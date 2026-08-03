@@ -1,21 +1,37 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>BasePlace</title>
+    <title>BestPlace</title>
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
       rel="stylesheet"
       integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
       crossorigin="anonymous"
     />
+    <!-- Leaflet: peta OpenStreetMap, tanpa API key -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      crossorigin="anonymous"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Calistoga&family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <!-- theme.css setelah bootstrap supaya token & komponen kustom menang -->
+    <link rel="stylesheet" href="/css/theme.css" />
   </head>
-  <body class="d-flex flex-column vh-100">
+  <body class="d-flex flex-column min-vh-100">
     <%- include('partials/navbar') %>
 
-    <main class="container mt-5">
-      <%- include('partials/alert') %> <%- body %>
+    <main class="<%= fullWidth ? 'flex-grow-1' : 'container mt-5' %>">
+      <% if (fullWidth) { %>
+      <div class="container mt-3"><%- include('partials/alert') %></div>
+      <% } else { %> <%- include('partials/alert') %> <% } %> <%- body %>
     </main>
 
     <%- include('partials/footer') %>
@@ -30,6 +46,12 @@
       crossorigin="anonymous"
     ></script>
 
+    <script
+      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      crossorigin="anonymous"
+    ></script>
+
+    <script src="/js/map.js"></script>
     <script src="/js/validate-form.js"></script>
   </body>
 </html>

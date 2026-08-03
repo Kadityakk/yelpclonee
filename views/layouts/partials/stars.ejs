@@ -1,0 +1,17 @@
+<%
+// bintang rating dari SVG (bukan emoji) supaya tajam & bisa diwarnai lewat CSS.
+// rating null = belum ada ulasan -> semua bintang abu-abu
+const value = typeof rating === "number" ? rating : 0;
+const filled = Math.round(value);
+%>
+<span
+  class="bp-stars"
+  role="img"
+  aria-label="<%= rating ? `Rating ${value.toFixed(1)} dari 5` : 'Belum ada ulasan' %>"
+>
+  <% for (let i = 1; i <= 5; i++) { %>
+  <svg class="bp-star <%= i <= filled ? 'is-on' : '' %>" viewBox="0 0 20 20" aria-hidden="true">
+    <path d="M10 1.6l2.6 5.3 5.8.8-4.2 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8L1.6 7.7l5.8-.8z" />
+  </svg>
+  <% } %>
+</span>

@@ -22,7 +22,9 @@ router
   .post(
     isAuth,
     upload.array("image", 5),
-    validatePlace,
+    wrapAsync(validatePlace),
+    // tidak ada validateImages: upload gambar opsional, kalau kosong
+    // controller mengambilkan foto dari Unsplash
     wrapAsync(placeController.store)
   );
 
@@ -31,21 +33,22 @@ router.get("/create", isAuth, (req, res) => {
 });
 
 // routes with id
+// urutannya: id divalidasi dulu, baru cek kepemilikan (isAuthorPlace query pakai id itu)
 router
   .route("/:id")
   .get(isValidObjectId("/places"), wrapAsync(placeController.show))
   .put(
     isAuth,
-    isAuthorPlace,
     isValidObjectId("/places"),
+    wrapAsync(isAuthorPlace),
     upload.array("image", 5),
-    validatePlace,
+    wrapAsync(validatePlace),
     wrapAsync(placeController.update)
   )
   .delete(
     isAuth,
-    isAuthorPlace,
     isValidObjectId("/places"),
+    wrapAsync(isAuthorPlace),
     wrapAsync(placeController.destroy)
   );
 
@@ -53,8 +56,8 @@ router
 router.get(
   "/:id/edit",
   isAuth,
-  isAuthorPlace,
   isValidObjectId("/places"),
+  wrapAsync(isAuthorPlace),
   wrapAsync(placeController.edit)
 );
 
